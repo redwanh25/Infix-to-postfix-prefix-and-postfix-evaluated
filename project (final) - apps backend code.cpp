@@ -92,7 +92,10 @@ int Evaluate_Postfix(string exp)
 int Weight(char ch)
 {
     int power = 0;
-    if(ch == '*' || ch == '/' || ch == '^'){
+    if(ch == '^'){
+        power = 3;
+    }
+    if(ch == '*' || ch == '/'){
         power = 2;
     }
     else if(ch == '+' || ch == '-'){
@@ -101,12 +104,13 @@ int Weight(char ch)
     return power;
 }
 
-bool Precedence(char ch1, char ch2)
+bool Precedence(char ch1, char ch2, int check)
 {
 	int operator_1 = Weight(ch1);
 	int operator_2 = Weight(ch2);
 
-	return (operator_1 > operator_2 ?  true : false);   // >= sir
+    if(check == 1) return (operator_1 >= operator_2 ?  true : false);
+	else if(check == 2) return (operator_1 > operator_2 ?  true : false);
 }
 
 bool Operator(char ch)
@@ -138,7 +142,7 @@ bool Operand(char ch)
 	return false;
 }
 
-string Infix_To_Postfix(string exp)
+string Infix_To_Postfix(string exp, int check)
 {
 	stack <char> S;
 	string postfix = "";
@@ -148,12 +152,12 @@ string Infix_To_Postfix(string exp)
 		}
 		else if(Operator(exp[i])){
             postfix += ' ';
-			while(!S.empty() && S.top() != '(' && Precedence(S.top(), exp[i])){
-                while(!S.empty() && S.top() != '('){      // sir
+			while(!S.empty() && S.top() != '(' && Precedence(S.top(), exp[i], check)){
+              ///  while(!S.empty() && S.top() != '('){      // sir
                     postfix += S.top();
                     postfix += ' ';
                     S.pop();
-                }
+              ///  }
 			}
             S.push(exp[i]);
 		}
@@ -195,7 +199,7 @@ string Infix_To_Prefix(string exp)
             exp.replace(i, 1, ")");
         }
 	}
-	exp = Infix_To_Postfix(exp);
+	exp = Infix_To_Postfix(exp, 2);
 	reverse(exp.begin(), exp.end());
 	return exp;
 }
@@ -257,7 +261,7 @@ int main()
             ck = Parenthesis_Balance(exp);
         }
 
-        string postfix = Infix_To_Postfix(exp);
+        string postfix = Infix_To_Postfix(exp, 1);
         cout << "   Infix To Postfix : " << postfix << endl;
 
         string prefix = Infix_To_Prefix(exp);

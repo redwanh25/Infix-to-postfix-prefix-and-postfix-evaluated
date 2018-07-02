@@ -45,7 +45,10 @@ void print(char exp, deque <char> S, string postfix)
 int Weight(char ch)
 {
     int power = 0;
-    if(ch == '*' || ch == '/' || ch == '^'){
+    if(ch == '^'){
+        power = 3;
+    }
+    else if(ch == '/' || ch == '*'){
         power = 2;
     }
     else if(ch == '+' || ch == '-'){
@@ -54,12 +57,13 @@ int Weight(char ch)
     return power;
 }
 
-bool Precedence(char ch1, char ch2)
+bool Precedence(char ch1, char ch2, int check)
 {
 	int operator_1 = Weight(ch1);
 	int operator_2 = Weight(ch2);
 
-	return (operator_1 > operator_2 ?  true : false);   // >= sir
+    if(check == 1) return (operator_1 >= operator_2 ?  true : false);
+	else if(check == 2) return (operator_1 > operator_2 ?  true : false);
 }
 
 bool Operator(char ch)
@@ -84,7 +88,7 @@ bool Operand(char ch)
 	return false;
 }
 
-string Infix_To_Postfix(string exp)
+string Infix_To_Postfix(string exp, int check)
 {
 	deque <char> S;
 	bool pr = false;
@@ -95,12 +99,12 @@ string Infix_To_Postfix(string exp)
 		}
 		else if(Operator(exp[i])){
             postfix += ' ';
-			while(!S.empty() && S.back() != '(' && Precedence(S.back(), exp[i])){
-                while(!S.empty() && S.back() != '('){      // sir
+			while(!S.empty() && S.back() != '(' && Precedence(S.back(), exp[i], check)){
+              ///  while(!S.empty() && S.back() != '('){      // sir
                     postfix += S.back();
                     postfix += ' ';
                     S.pop_back();
-                }
+              ///  }
 			}
             S.push_back(exp[i]);
             print(exp[i], S, postfix);
@@ -190,7 +194,7 @@ string Infix_To_Prefix(string exp)
 	cout << "       -----------------------------------------------------------------------------------------------------------------------------" << endl;
 	cout << "       |   Symbol  |               Stack               |                                Expression                                 |" << endl;
 	cout << "       -----------------------------------------------------------------------------------------------------------------------------" << endl;
-	exp = Infix_To_Postfix(exp);
+	exp = Infix_To_Postfix(exp, 2);
 	reverse(exp.begin(), exp.end());
 
 	cout << endl;
@@ -270,13 +274,13 @@ int main()
         bool ck = false;
         int key = 0;
 
-        string s1 = "=> Input Should Be 1 Character / Digit...";
-        cout << endl << "   ";
-        for(int i = 0; i < s1.size(); i++){
-            for(int j = 0; j < 30000000; j++);
-            cout << s1[i];
-        }
-        cout << endl;
+//        string s1 = "=> Input Should Be 1 Character / Digit...";
+//        cout << endl << "   ";
+//        for(int i = 0; i < s1.size(); i++){
+//            for(int j = 0; j < 30000000; j++);
+//            cout << s1[i];
+//        }
+//        cout << endl;
 
         string s2 = "=> What you want...?";
         cout << endl << "   ";
@@ -339,7 +343,7 @@ int main()
                 cout << "       -----------------------------------------------------------------------------------------------------------------------------" << endl;
                 cout << "       |   Symbol  |               Stack               |                                Expression                                 |" << endl;
                 cout << "       -----------------------------------------------------------------------------------------------------------------------------" << endl;
-                string postfix = Infix_To_Postfix(exp);
+                string postfix = Infix_To_Postfix(exp, 1);
                 cout << endl;
 
                 string s8 = "Infix To Postfix : ";

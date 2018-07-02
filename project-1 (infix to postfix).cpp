@@ -4,7 +4,10 @@ using namespace std;
 int Weight(char ch)
 {
     int power = 0;
-    if(ch == '*' || ch == '/'){
+    if(ch == '^'){
+        power = 3;
+    }
+    else if(ch == '*' || ch == '/'){
         power = 2;
     }
     else if(ch == '+' || ch == '-'){
@@ -23,7 +26,7 @@ bool Precedence(char ch1, char ch2)
 
 bool Operator(char ch)
 {
-	if(ch == '+' || ch == '-' || ch == '*' || ch == '/'){
+	if(ch == '+' || ch == '-' || ch == '*' || ch == '/'|| ch == '^'){
 		return true;
 	}
 	return false;
